@@ -518,9 +518,40 @@ elif menu == "🗺️ Peta Blok Lahan":
             st_folium(m, width=1024, height=600)
 
     else:
-        # ================= PETA OFFLINE =================
-        st.markdown("### 🖼️ Peta Blok Offline")
-        st.image(r"C:\Users\LENOVO\Downloads\Peta Offline Blok.png", use_container_width=True)
+    # ================= PETA OFFLINE =================
+    st.markdown("### 🖼️ Peta Blok Offline")
+
+    # Path relatif ke file di repo
+    image_path = "Peta Offline Blok.png"
+
+    # Tentukan koordinat batas (imageBounds)
+    # Ini contoh: sesuaikan dengan wilayah peta kamu
+    # Format [[lat_min, lon_min], [lat_max, lon_max]]
+    image_bounds = [[-3.33, 114.58], [-3.30, 114.61]]
+
+    # Buat peta dasar
+    m = folium.Map(
+        location=[-3.315, 114.595],  # pusat peta
+        zoom_start=15,
+        tiles=None  # tanpa tile online (offline mode)
+    )
+
+    # Tambahkan layer PNG sebagai overlay
+    folium.raster_layers.ImageOverlay(
+        name="Peta Blok Offline",
+        image=image_path,
+        bounds=image_bounds,
+        opacity=1.0,
+        interactive=True,
+        cross_origin=False
+    ).add_to(m)
+
+    # Tambahkan kontrol layer
+    folium.LayerControl().add_to(m)
+
+    # Tampilkan di Streamlit
+    st_folium(m, width=1024, height=600)
+
 
 
 # -------------------------
@@ -550,6 +581,7 @@ elif menu == "⚙️ Pengaturan (Admin)":
             save_data(pd.DataFrame(columns=SCHEMAS[f]), f)
         st.success("Semua data berhasil dihapus.")
         safe_rerun()
+
 
 
 
