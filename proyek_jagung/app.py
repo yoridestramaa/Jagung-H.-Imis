@@ -517,16 +517,15 @@ elif menu == "🗺️ Peta Blok Lahan":
 
             st_folium(m, width=1024, height=600)
 
-        else:
+            elif map_type == "🖼️ Peta Offline Blok":
         # ================= PETA OFFLINE =================
         st.markdown("### 🖼️ Peta Blok Offline")
 
-        # Path relatif ke file di repo (pastikan file ini ada di folder proyek_jagung)
-        image_path = "Peta Offline Blok.png"
+        # Path relatif ke file di repo (pastikan file ini ada di folder proyek_jagung/data)
+        image_path = "proyek_jagung/data/Peta Offline Blok.png"
 
         # Tentukan koordinat batas (imageBounds)
-        # Sesuaikan dengan area sebenarnya nanti
-        image_bounds = [[-3.33, 114.58], [-3.30, 114.61]]
+        image_bounds = [[-3.33, 114.58], [-3.30, 114.61]]  # Sesuaikan nanti
 
         # Buat peta dasar (tanpa tile online)
         m = folium.Map(
@@ -578,6 +577,7 @@ elif menu == "⚙️ Pengaturan (Admin)":
             save_data(pd.DataFrame(columns=SCHEMAS[f]), f)
         st.success("Semua data berhasil dihapus.")
         safe_rerun()
+
 
 
 
