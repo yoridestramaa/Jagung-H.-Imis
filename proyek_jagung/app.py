@@ -1,17 +1,3 @@
-import os
-import pandas as pd
-
-def load_data(filename):
-    return pd.read_csv(os.path.join("data", filename))
-
-blok = load_data("blok.csv")
-keuangan = load_data("keuangan.csv")
-panen = load_data("panen.csv")
-pupuk = load_data("pupuk.csv")
-tanaman = load_data("tanaman.csv")
-tenaga_kerja = load_data("tenaga_kerja.csv")
-users = pd.read_csv("users.csv")  # karena file users.csv di root
-
 # app.py — Geo-Interactive Agricultural Dashboard v2.0 (Modern Elegant)
 import streamlit as st
 import pandas as pd
@@ -564,5 +550,6 @@ elif menu == "⚙️ Pengaturan (Admin)":
             save_data(pd.DataFrame(columns=SCHEMAS[f]), f)
         st.success("Semua data berhasil dihapus.")
         safe_rerun()
+
 
 
