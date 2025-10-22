@@ -1,0 +1,4 @@
+username,password,role
+admin,admin123,Admin
+worker,worker123,Field Worker
+view,view123,Viewer
