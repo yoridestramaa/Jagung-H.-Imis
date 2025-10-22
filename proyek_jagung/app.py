@@ -450,11 +450,10 @@ elif menu == "🗺️ Peta Blok Lahan":
     # Pilihan tipe peta
     map_type = st.radio("Pilih tipe peta", ["🗺️ Geo Map (Marker)", "🖼️ Peta Offline Blok"])
 
+    # ---------------------------- TIPE 1: GEO MAP ----------------------------
     if map_type == "🗺️ Geo Map (Marker)":
-        # ------------------- kode Geo Map lama -------------------
         blok = load_data("blok.csv")
 
-        # Jika data kosong, buat dummy
         if blok.empty:
             st.warning("Belum ada data blok lahan. Menampilkan dummy sementara.")
             blok = pd.DataFrame([
@@ -471,30 +470,25 @@ elif menu == "🗺️ Peta Blok Lahan":
                 for i in range(6)
             ])
 
-        # Sidebar filter
         statuses = ["Semua"] + sorted(blok["Status Tanam"].dropna().astype(str).unique().tolist()) if "Status Tanam" in blok.columns else ["Semua"]
         kesub = ["Semua"] + sorted(blok["Kesuburan"].dropna().astype(str).unique().tolist()) if "Kesuburan" in blok.columns else ["Semua"]
         sel_status = st.sidebar.selectbox("Status Tanam", statuses, key="map_status")
         sel_kesub = st.sidebar.selectbox("Kesuburan", kesub, key="map_kesub")
 
-        # Pastikan Latitude dan Longitude ada
         if ("Latitude" not in blok.columns) or ("Longitude" not in blok.columns) or blok["Latitude"].isna().any() or blok["Longitude"].isna().any():
             center_lat, center_lon = -3.316, 114.602
             blok["Latitude"] = center_lat + (np.random.rand(len(blok)) - 0.5) * 0.02
             blok["Longitude"] = center_lon + (np.random.rand(len(blok)) - 0.5) * 0.02
 
-        # Filter data
         blok_filtered = blok.copy()
         if sel_status != "Semua":
             blok_filtered = blok_filtered[blok_filtered["Status Tanam"] == sel_status]
         if sel_kesub != "Semua":
             blok_filtered = blok_filtered[blok_filtered["Kesuburan"] == sel_kesub]
 
-        # Jika filter kosong
         if blok_filtered.empty:
             st.warning("Data blok tidak ditemukan untuk filter ini.")
         else:
-            # Map
             m = folium.Map(
                 location=[blok_filtered["Latitude"].mean(), blok_filtered["Longitude"].mean()],
                 zoom_start=15
@@ -503,7 +497,6 @@ elif menu == "🗺️ Peta Blok Lahan":
             folium.TileLayer('Esri.WorldImagery', name='Satelit').add_to(m)
             folium.LayerControl().add_to(m)
 
-            # Marker
             for _, row in blok_filtered.iterrows():
                 folium.Marker(
                     location=[row["Latitude"], row["Longitude"]],
@@ -517,24 +510,19 @@ elif menu == "🗺️ Peta Blok Lahan":
 
             st_folium(m, width=1024, height=600)
 
-            elif map_type == "🖼️ Peta Offline Blok":
-        # ================= PETA OFFLINE =================
+    # ---------------------------- TIPE 2: PETA OFFLINE ----------------------------
+    elif map_type == "🖼️ Peta Offline Blok":
         st.markdown("### 🖼️ Peta Blok Offline")
 
-        # Path relatif ke file di repo (pastikan file ini ada di folder proyek_jagung/data)
         image_path = "proyek_jagung/data/Peta Offline Blok.png"
+        image_bounds = [[-3.33, 114.58], [-3.30, 114.61]]
 
-        # Tentukan koordinat batas (imageBounds)
-        image_bounds = [[-3.33, 114.58], [-3.30, 114.61]]  # Sesuaikan nanti
-
-        # Buat peta dasar (tanpa tile online)
         m = folium.Map(
             location=[-3.315, 114.595],
             zoom_start=15,
             tiles=None
         )
 
-        # Tambahkan PNG sebagai layer overlay
         folium.raster_layers.ImageOverlay(
             name="Peta Blok Offline",
             image=image_path,
@@ -544,10 +532,7 @@ elif menu == "🗺️ Peta Blok Lahan":
             cross_origin=False
         ).add_to(m)
 
-        # Tambahkan kontrol layer
         folium.LayerControl().add_to(m)
-
-        # Tampilkan di Streamlit
         st_folium(m, width=1024, height=600)
 
 # -------------------------
@@ -577,6 +562,7 @@ elif menu == "⚙️ Pengaturan (Admin)":
             save_data(pd.DataFrame(columns=SCHEMAS[f]), f)
         st.success("Semua data berhasil dihapus.")
         safe_rerun()
+
 
 
 
